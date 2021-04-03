@@ -1,27 +1,18 @@
-import React, { Fragment, Component } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { Spinner } from './../layout/Spinner';
 import Repos from '../repos/Repos';
 import { PropTypes } from 'prop-types';
 import { Link } from 'react-router-dom';
 
 
-class User extends Component {
+const User = ({ user, repos, loading, getUserRepos, getUser, match }) => {
+    // constantly runs in a loop for every update, to stop pass empty brackets
+    useEffect(() => {
+        getUser(match.params.login)
+        getUserRepos(match.params.login)
+        // eslint-disable-next-line
+    }, []) // i.e. [repos] - will only run when repos change, [] - once
 
-    componentDidMount() {
-        this.props.getUser(this.props.match.params.login)
-        this.props.getUserRepos(this.props.match.params.login)
-    }
-
-    static propTypes = {
-        loading: PropTypes.bool.isRequired,
-        user: PropTypes.object.isRequired,
-        repos: PropTypes.array.isRequired,
-        getUser: PropTypes.func.isRequired,
-        getUserRepos: PropTypes.func.isRequired,
-    }
-    
-
-  render() {
       const {
           name,
           avatar_url,
@@ -36,9 +27,8 @@ class User extends Component {
           public_repos,
           public_gists,
           hireable
-      } = this.props.user
+      } = user
     
-      const { loading, repos } = this.props
     return (
         loading ? <Spinner/> :
       <Fragment>
@@ -89,7 +79,13 @@ class User extends Component {
        <Repos repos={repos}/>
       </Fragment>
     )
-  }
 }
 
+User.propTypes = {
+    loading: PropTypes.bool.isRequired,
+    user: PropTypes.object.isRequired,
+    repos: PropTypes.array.isRequired,
+    getUser: PropTypes.func.isRequired,
+    getUserRepos: PropTypes.func.isRequired,
+}
 export default User
