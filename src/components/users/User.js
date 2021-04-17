@@ -1,11 +1,16 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useContext } from 'react'
 import { Spinner } from './../layout/Spinner';
 import Repos from '../repos/Repos';
-import { PropTypes } from 'prop-types';
 import { Link } from 'react-router-dom';
+import GithubContext from '../../context/github/GithubContext';
 
 
-const User = ({ user, repos, loading, getUserRepos, getUser, match }) => {
+
+const User = ({match }) => {
+    const githubContext = useContext(GithubContext)
+
+    const { getUser, loading, user, repos, getUserRepos } = githubContext
+
     // constantly runs in a loop for every update, to stop pass empty brackets
     useEffect(() => {
         getUser(match.params.login)
@@ -30,7 +35,7 @@ const User = ({ user, repos, loading, getUserRepos, getUser, match }) => {
       } = user
     
     return (
-        loading ? <Spinner/> :
+        // loading ? <Spinner/> :
       <Fragment>
        <Link to='/' className="btn btn-light"> Back</Link>
        Hirable: {' '}
@@ -81,11 +86,5 @@ const User = ({ user, repos, loading, getUserRepos, getUser, match }) => {
     )
 }
 
-User.propTypes = {
-    loading: PropTypes.bool.isRequired,
-    user: PropTypes.object.isRequired,
-    repos: PropTypes.array.isRequired,
-    getUser: PropTypes.func.isRequired,
-    getUserRepos: PropTypes.func.isRequired,
-}
+
 export default User
